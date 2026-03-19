@@ -1,0 +1,17 @@
+const ORDER_STATUS = {
+    PENDING: 1,
+    IN_PROGRESS: 2,
+    DELIVERED: 3,
+    COMPLETED: 4,
+    CANCELLED: 5
+}
+
+const ORDER_STATUS_LABEL = {
+    1: "PENDING",
+    2: "IN_PROGRESS",
+    3: "DELIVERED",
+    4: "COMPLETED",
+    5: "CANCELLED"
+}
+
+module.exports = { ORDER_STATUS, ORDER_STATUS_LABEL }

@@ -4,7 +4,8 @@ const register  = async(req, res) => {
     try {
         const user = await registerService(req.body)
         res.status(201).json({
-            message: "Register success", user
+            message: "Register success", 
+            data: user
         })
     } catch (error) {
         res.status(error.statusCode || 500).json({
@@ -17,7 +18,8 @@ const login = async(req, res) => {
     try {
         const user = await loginService(req.body)
         res.status(201).json({
-            message: "Login success", user
+            message: "Login success", 
+            data: user
         })
     } catch (error) {
         res.status(error.statusCode || 500).json({

@@ -1,13 +1,17 @@
 const {getMeService, updateMeService, getUserByIdService} = require("../services/user.service")
+const formatUser = require("../utils/formatUser")
 
 
 const getMe = async(req, res) => {
     try {
-        const UserId = req.user.userID
+        const userId = req.user.userID
 
-        const me = await getMeService(UserId)
+        const me = await getMeService(userId)
 
-        res.status(200).json(me) 
+        res.status(200).json({
+            message: "Get profile successfully",
+            data: formatUser(me)
+        })
 
     } catch (error) {
         res.status(error.statusCode || 500).json({
@@ -16,14 +20,20 @@ const getMe = async(req, res) => {
     }
 }
 
-
 const updateMe = async(req, res) => {
     try {
-        const UserId = req.user.userID
+        const userId = req.user.userID
 
-        const me = await updateMeService(UserId, req.body)
+        if (req.file) {
+            req.body.avatar = "/uploads/" + req.file.filename
+        }
 
-        res.status(200).json(me) 
+        const me = await updateMeService(userId, req.body)
+
+        res.status(200).json({
+            message: "Update profile successfully",
+            data: formatUser(me)
+        })
 
     } catch (error) {
         res.status(error.statusCode || 500).json({
@@ -38,13 +48,16 @@ const getUserById = async(req, res) => {
 
         if (Number.isNaN(id)) {
             return res.status(400).json({
-                message: "Invalid User ID"
+                message: "Invalid user ID"
             })
         }
 
         const user = await getUserByIdService(id)
 
-        res.status(200).json(user) 
+        res.status(200).json({
+            message: "Get user successfully",
+            data: formatUser(user)
+        })
 
     } catch (error) {
         res.status(error.statusCode || 500).json({
