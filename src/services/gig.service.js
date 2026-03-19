@@ -52,10 +52,10 @@ const getGigsService = async (page, limit, categoryID, search) => {
     }
 }
 
-const getGigByIdService = async (id) => {
+const getGigByIdService = async (gigId) => {
 
     const gig = await prisma.gigs.findUnique({
-        where: { gigID: id },
+        where: { gigID: gigId },
         include: {
             gig_packages: true
         }

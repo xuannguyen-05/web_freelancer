@@ -17,6 +17,14 @@ const getMeService = async(userId) => {
 }
 
 const updateMeService = async(userID, data) => {
+    const existingUser = await prisma.users.findUnique({
+        where: { userID }
+    })
+
+    if (!existingUser) {
+        throw new AppError("User not found", 404)
+    }
+    
     const me = await prisma.users.update({
         where: {userID: userID},
         data: data,

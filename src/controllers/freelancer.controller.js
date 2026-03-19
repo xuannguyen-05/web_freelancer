@@ -2,12 +2,18 @@ const {createFreelancerService,
         getFreelancerByIdService, 
         getMyFreelancerService, 
         updateMyFreelancerService} = require("../services/freelancer.service")
+const formatFreelancer = require("../utils/formatFreelancer")
 
 const createFreelancer = async(req, res) => {
     try {
         const userId = req.user.userID
-        const freelancer = await  createFreelancerService(userId, req.body)
-        res.status(201).json(freelancer)
+        const freelancer = await createFreelancerService(userId, req.body)
+
+        res.status(201).json({
+            message: "Freelancer profile created",
+            data: formatFreelancer(freelancer)
+        })
+
     } catch (error) {
         res.status(error.statusCode || 500).json({
             message: error.message
@@ -27,7 +33,10 @@ const getFreelancerById = async(req, res) => {
 
         const freelancer = await getFreelancerByIdService(id)
 
-        res.status(200).json(freelancer) 
+        res.status(200).json({
+            message: "Get freelancer detail successfully",
+            data: formatFreelancer(freelancer)
+        }) 
 
     } catch (error) {
         res.status(error.statusCode || 500).json({
@@ -42,7 +51,10 @@ const getMyFreelancer = async(req, res) => {
 
         const me = await getMyFreelancerService(UserId)
 
-        res.status(200).json(me) 
+        res.status(200).json({
+            message: "Get freelancer successfully",
+            data: formatFreelancer(me)
+        }) 
 
     } catch (error) {
         res.status(error.statusCode || 500).json({
@@ -58,7 +70,10 @@ const updateMyFreelancer = async(req, res) => {
 
         const me = await updateMyFreelancerService(UserId, req.body)
 
-        res.status(200).json(me) 
+        res.status(200).json({
+            message: "Freelancer updated successfully",
+            data: formatFreelancer(me)
+        }) 
 
     } catch (error) {
         res.status(error.statusCode || 500).json({

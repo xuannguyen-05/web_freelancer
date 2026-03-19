@@ -117,8 +117,8 @@ model orders {
   delivered_at                     DateTime?       @db.DateTime(0)
   updated_at                       DateTime?       @db.DateTime(0)
   conversations                    conversations[]
-  users_orders_buyerIDTousers      users           @relation("orders_buyerIDTousers", fields: [buyerID], references: [userID], onUpdate: Restrict, map: "orders_ibfk_1")
-  users_orders_freelancerIDTousers users           @relation("orders_freelancerIDTousers", fields: [freelancerID], references: [userID], onUpdate: Restrict, map: "orders_ibfk_2")
+  buyer                            users           @relation("BuyerOrders", fields: [buyerID], references: [userID], onUpdate: Restrict, map: "orders_ibfk_1")
+  freelancer                       users           @relation("FreelancerOrders", fields: [freelancerID], references: [userID], onUpdate: Restrict, map: "orders_ibfk_2")
   gigs                             gigs            @relation(fields: [gigID], references: [gigID], onUpdate: Restrict, map: "orders_ibfk_3")
   gig_packages                     gig_packages    @relation(fields: [packageID], references: [packageID], onUpdate: Restrict, map: "orders_ibfk_4")
   reviews                          reviews[]
@@ -138,8 +138,8 @@ model reviews {
   comment                         String?   @db.Text
   created_at                      DateTime? @default(now()) @db.DateTime(0)
   orders                          orders    @relation(fields: [orderID], references: [orderID], onDelete: Cascade, onUpdate: Restrict, map: "reviews_ibfk_1")
-  users_reviews_reviewerIDTousers users     @relation("reviews_reviewerIDTousers", fields: [reviewerID], references: [userID], onUpdate: Restrict, map: "reviews_ibfk_2")
-  users_reviews_revieweeIDTousers users     @relation("reviews_revieweeIDTousers", fields: [revieweeID], references: [userID], onUpdate: Restrict, map: "reviews_ibfk_3")
+  reviewer users @relation("Reviewer", fields: [reviewerID], references: [userID])
+  reviewee users @relation("Reviewee", fields: [revieweeID], references: [userID])
 
   @@index([orderID], map: "orderID")
   @@index([revieweeID], map: "revieweeID")
@@ -185,9 +185,9 @@ model users {
   freelancer_skills                 freelancer_skills[]
   gigs                              gigs[]
   messages                          messages[]
-  orders_orders_buyerIDTousers      orders[]                    @relation("orders_buyerIDTousers")
-  orders_orders_freelancerIDTousers orders[]                    @relation("orders_freelancerIDTousers")
-  reviews_reviews_reviewerIDTousers reviews[]                   @relation("reviews_reviewerIDTousers")
-  reviews_reviews_revieweeIDTousers reviews[]                   @relation("reviews_revieweeIDTousers")
+  buyerOrders                       orders[]                    @relation("BuyerOrders")
+  freelancerOrders                  orders[]                    @relation("FreelancerOrders")
+  reviewsGiven                      reviews[]                    @relation("Reviewer")
+  reviewsReceived                   reviews[]                   @relation("Reviewee")
   user_roles                        user_roles[]
 }

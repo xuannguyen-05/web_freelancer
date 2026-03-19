@@ -3,6 +3,7 @@ const {getGigsService,
         createGigService, 
         updateGigService,
         deleteGigService} = require("../services/gig.service")
+const formatGig = require("../utils/formatGig")
 
 const getGigs = async (req, res) => {
    try {
@@ -13,7 +14,16 @@ const getGigs = async (req, res) => {
 
     const gigs = await getGigsService(page, limit, categoryID, search)
 
-    res.status(200).json(gigs)
+    res.status(200).json({
+        message: "Get gigs successfully",
+        data: {
+            page: result.page,
+            limit: result.limit,
+            total: result.total,
+            data: result.data.map(formatGig)
+        }
+    })
+
    } catch (error) {
         res.status(error.statusCode || 500).json({
             message: error.message
@@ -23,17 +33,20 @@ const getGigs = async (req, res) => {
 
 const getGigById = async (req, res) => {
     try {
-        const id = +req.params.id
+        const gigId = +req.params.id
 
-        if (Number.isNaN(id)) {
+        if (Number.isNaN(gigId)) {
             return res.status(400).json({
                 message: "Invalid Gig ID"
             })
         }
 
-        const gig = await getGigByIdService(id)
+        const gig = await getGigByIdService(gigId)
 
-        res.status(200).json(gig)
+        res.status(200).json({
+            message: "Get gig detail successfully",
+            data: formatGig(gig)
+        })
 
     } catch (error) {
         res.status(error.statusCode || 500).json({
@@ -52,7 +65,10 @@ const createGig = async (req, res) => {
 
         const gig = await createGigService(userId, req.body)
 
-        res.status(201).json(gig)
+        res.status(201).json({
+            message: "Gig created successfully",
+            data: formatGig(gig)
+        })
 
     } catch (error) {
         res.status(error.statusCode || 500).json({
@@ -67,13 +83,22 @@ const updateGig = async(req, res) => {
 
         const gigId = +req.params.id
 
+        if (Number.isNaN(gigId)) {
+            return res.status(400).json({
+                message: "Invalid Gig ID"
+            })
+        }
+
         if (req.file) {
             req.body.img_url = "/uploads/" + req.file.filename
         }
 
         const gig = await updateGigService(gigId, userId, req.body)
 
-        res.status(200).json(gig)
+        res.status(200).json({
+            message: "Gig updated successfully",
+            data: formatGig(gig)
+        })
         
     } catch (error) {
         res.status(error.statusCode || 500).json({
@@ -88,9 +113,18 @@ const deleteGig = async(req, res) => {
 
         const gigId = +req.params.id
 
+        if (Number.isNaN(gigId)) {
+            return res.status(400).json({
+                message: "Invalid Gig ID"
+            })
+        }
+
         const gig = await deleteGigService(gigId, userId)
 
-        res.status(200).json(gig)
+        res.status(200).json({
+            message: "Gig deleted successfully",
+            data: null
+        })
         
     } catch (error) {
         res.status(error.statusCode || 500).json({
