@@ -144,6 +144,8 @@ model reviews {
   @@index([orderID], map: "orderID")
   @@index([revieweeID], map: "revieweeID")
   @@index([reviewerID], map: "reviewerID")
+
+  @@unique([orderID, reviewerID])
 }
 
 model roles {
