@@ -32,4 +32,25 @@ const createConversationService  = async(orderId, userId) => {
     return conversation
 }
 
-module.exports = {createConversationService}
+const getConversationByOrderIdService = async(orderId, userId) => {
+    const conversation = await prisma.conversations.findUnique({
+        where: {orderID: orderId},
+        include: {
+            conversation_participants: true,
+            messages: true
+        }
+    })
+
+    if(!conversation){
+        throw new AppError("Conversation Not Found", 404)
+    }
+
+    const participantIds = conversation.conversation_participants.map(p => p.userID)
+    if(!participantIds.includes(userId)){
+        throw new AppError("Forbidden", 403)
+    }
+
+    return conversation
+}
+
+module.exports = {createConversationService, getConversationByOrderIdService}
